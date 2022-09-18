@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lienzo🖍</title>
+    <style>
+        body {
+            text-align: center;
+            background-image: url(https://drive.google.com/uc?export=view&id=1-gBIWRw_bjnRil2cPWDEcrd_MnFvGK5E);
+            background-size: cover;
+        }
+
+        h1 {
+            color: white;
+        }
+
+        canvas {
+            background-color: whitesmoke;
+            border: ridge burlywood 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Mi primer lienzo</h1>
+    <canvas id="lienzo" width="800" height="500"></canvas><br>
+    <input type="color" id="color" placeholder="color">
+    <input type="number" id="grosor" placeholder="grosor de línea">
+    <button onclick="limpiar()">Limpiar lienzo</button>
+
+    <script>
+        canvas = document.getElementById("lienzo");
+        ctx = canvas.getContext("2d");
+        color = "red";
+        grosor = 2;
+
+        //canvas.addEventListener("mousedown", dibujar);
+
+        function dibujar(e) {
+            color = document.getElementById("color").value;
+
+            mouseX = e.clientX - canvas.offsetLeft;
+            mouseY = e.clientY - canvas.offsetTop;
+            circulo(mouseX, mouseY);
+
+            console.log("X = " + mouseX + " ,Y =  " + mouseY);
+        }
+
+        function circulo(x, y) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x, y, 40, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+        function limpiar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        var dibujando = 0;
+        var xFinal, yFinal;
+
+        canvas.addEventListener("mousedown", function () {
+            color = document.getElementById("color").value;
+            grosor = document.getElementById("grosor").value;
+            dibujando = 1;
+        })
+
+        canvas.addEventListener("mousemove", dibujoLibre);
+
+        function dibujoLibre(e) {
+            xInicial = e.clientX - canvas.offsetLeft;
+            yInicial = e.clientY - canvas.offsetTop;
+
+            if (dibujando) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = grosor;
+                ctx.beginPath();
+                ctx.moveTo(xFinal, yFinal);
+                ctx.lineTo(xInicial, yInicial);
+                ctx.stroke();
+            }
+
+            xFinal = xInicial;
+            yFinal = yInicial;
+        }
+
+        canvas.addEventListener("mouseleave", function () {
+            dibujando = 0;
+        })
+
+        canvas.addEventListener("mouseup", function () {
+            dibujando = 0;
+        })
+        
+        if (screen.width<992) {
+            document.getElementById("lienzo").width = screen.width-screen.width/3;
+            document.getElementById("lienzo").height = screen.height-screen.height/2;
+            document.body.style.overflow = "hidden";
+        }
+        canvas.addEventListener("touchstart", my_touchstart);
+
+        function my_touchstart(e) {
+            color = document.getElementById("color").value;
+            grosor = document.getElementById("grosor").value;
+            
+            xFinal = e.touches[0].clientX - canvas.offsetLeft;
+            yFinal = e.touches[0].clientY - canvas.offsetTop;
+        }
+
+        canvas.addEventListener("touchmove", my_touchmove);
+
+        function my_touchmove(e) {
+            xInicial = e.touches[0].clientX - canvas.offsetLeft;
+            yInicial = e.touches[0].clientY - canvas.offsetTop;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = grosor;
+            ctx.beginPath();
+            ctx.moveTo(xFinal, yFinal);
+            ctx.lineTo(xInicial, yInicial);
+            ctx.stroke();
+
+            xFinal = xInicial;
+            yFinal = yInicial;
+        }
+    </script>
+</body>
+
+</html>
